@@ -38,8 +38,6 @@ const employeeSchema = z.object({
   active: z.boolean(),
 });
 
-
-
 type Employee = z.infer<typeof employeeSchema>;
 
 const EmployeeOverviewPage: React.FC = () => {
@@ -281,4 +279,3 @@ const EmployeeOverviewPage: React.FC = () => {
 };
 
 export default EmployeeOverviewPage;
-

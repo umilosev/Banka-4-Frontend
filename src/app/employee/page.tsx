@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Loader2, ChevronRight, ChevronLeft, PanelLeft } from 'lucide-react';
+import { Loader2, ChevronRight, ChevronLeft, PanelLeft, Search } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -37,6 +37,13 @@ const EmployeeOverviewPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [filters, setFilters] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    position: '',
+  });
+  const [searchFilters, setSearchFilters] = useState(filters);
   const rowsPerPage = 5;
 
   useEffect(() => {
@@ -63,13 +70,35 @@ const EmployeeOverviewPage: React.FC = () => {
     fetchEmployees();
   }, []);
 
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+  };
+
+  const handleSearch = () => {
+    setSearchFilters(filters);
+    setCurrentPage(1);
+  };
+
+  const filteredEmployees = employees.filter((employee) => {
+    return (
+      employee.first_name.toLowerCase().includes(searchFilters.first_name.toLowerCase()) &&
+      employee.last_name.toLowerCase().includes(searchFilters.last_name.toLowerCase()) &&
+      employee.email.toLowerCase().includes(searchFilters.email.toLowerCase()) &&
+      employee.position.toLowerCase().includes(searchFilters.position.toLowerCase())
+    );
+  });
+
   // Calculate paginated data
   const indexOfLastEmployee = currentPage * rowsPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - rowsPerPage;
-  const currentEmployees = employees.slice(indexOfFirstEmployee, indexOfLastEmployee);
+  const currentEmployees = filteredEmployees.slice(indexOfFirstEmployee, indexOfLastEmployee);
 
   // Calculate total pages
-  const totalPages = Math.ceil(employees.length / rowsPerPage);
+  const totalPages = Math.ceil(filteredEmployees.length / rowsPerPage);
 
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
@@ -99,11 +128,16 @@ const EmployeeOverviewPage: React.FC = () => {
     <div className="p-8">
       <Breadcrumb>
         <BreadcrumbList>
-        <PanelLeft className = "w-4 h-4"/>
+          <PanelLeft className="w-4 h-4" />
           {breadcrumbItems.map((item, index) => (
             <React.Fragment key={index}>
               <BreadcrumbItem>
-                <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                <BreadcrumbLink
+                  href={item.href}
+                  className={item.label === 'Employees' ? 'font-bold text-black' : ''}
+                >
+                  {item.label}
+                </BreadcrumbLink>
               </BreadcrumbItem>
               {index < breadcrumbItems.length - 1 && <BreadcrumbSeparator />}
             </React.Fragment>
@@ -116,7 +150,47 @@ const EmployeeOverviewPage: React.FC = () => {
           <p className="text-sm text-gray-600">
             This table provides a clear and organized overview of key employee details for quick reference and easy access.
           </p>
-          
+          <div className="flex mt-4 space-x-2">
+            <input
+              type="text"
+              name="first_name"
+              placeholder="Filter by First Name"
+              value={filters.first_name}
+              onChange={handleFilterChange}
+              className="border p-2 bg-white w-1/4 rounded-md"
+            />
+            <input
+              type="text"
+              name="last_name"
+              placeholder="Filter by Last Name"
+              value={filters.last_name}
+              onChange={handleFilterChange}
+              className="border p-2 bg-white w-1/4 rounded-md"
+            />
+            <input
+              type="text"
+              name="email"
+              placeholder="Filter by Email"
+              value={filters.email}
+              onChange={handleFilterChange}
+              className="border p-2 bg-white w-1/4 rounded-md"
+            />
+            <input
+              type="text"
+              name="position"
+              placeholder="Filter by Position"
+              value={filters.position}
+              onChange={handleFilterChange}
+              className="border p-2 bg-white w-1/4 rounded-md"
+            />
+            <button
+              onClick={handleSearch}
+              className="flex items-center justify-center border border-black text-white bg-black p-2 rounded-md"
+            >
+              <Search className="w-4 h-4 mr-1" />
+              Search
+            </button>
+          </div>
         </CardHeader>
         <CardContent className="rounded-lg overflow-hidden">
           {loading ? (

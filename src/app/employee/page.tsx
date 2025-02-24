@@ -26,6 +26,8 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 
+import { mockEmployees } from './mockDataOverview';
+
 const employeeSchema = z.object({
   id: z.number(),
   first_name: z.string(),
@@ -35,6 +37,8 @@ const employeeSchema = z.object({
   position: z.string(),
   active: z.boolean(),
 });
+
+
 
 type Employee = z.infer<typeof employeeSchema>;
 
@@ -278,59 +282,3 @@ const EmployeeOverviewPage: React.FC = () => {
 
 export default EmployeeOverviewPage;
 
-export const mockEmployees = [
-  {
-    id: 1,
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john.doe@example.com',
-    phone_number: '123-456-7890',
-    position: 'Software Engineer',
-    active: true,
-  },
-  {
-    id: 2,
-    first_name: 'Jane',
-    last_name: 'Smith',
-    email: 'jane.smith@example.com',
-    phone_number: '987-654-3210',
-    position: 'Product Manager',
-    active: false,
-  },
-  {
-    id: 3,
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john.doe@example.com',
-    phone_number: '123-456-7890',
-    position: 'Software Engineer',
-    active: true,
-  },
-  {
-    id: 4,
-    first_name: 'Jane',
-    last_name: 'Smith',
-    email: 'jane.smith@example.com',
-    phone_number: '987-654-3210',
-    position: 'Product Manager',
-    active: false,
-  },
-  {
-    id: 5,
-    first_name: 'John',
-    last_name: 'Doe',
-    email: 'john.doe@example.com',
-    phone_number: '123-456-7890',
-    position: 'Software Engineer',
-    active: true,
-  },
-  {
-    id: 6,
-    first_name: 'Jane',
-    last_name: 'Smith',
-    email: 'jane.smith@example.com',
-    phone_number: '987-654-3210',
-    position: 'Product Manager',
-    active: false,
-  },
-];

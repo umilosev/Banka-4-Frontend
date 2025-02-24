@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ChevronRight, ChevronLeft, PanelLeft } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -76,10 +76,30 @@ const EmployeeOverviewPage: React.FC = () => {
     { label: 'Employees', href: '/employee' },
   ];
 
+  const renderPagination = () => {
+    const pages = [];
+    const totalPages = Math.ceil(employees.length / rowsPerPage);
+
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => setCurrentPage(i)}
+          className={`px-2 py-1 ${i === currentPage ? 'font-bold' : ''}`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return pages;
+  };
+
   return (
     <div className="p-8">
       <Breadcrumb>
         <BreadcrumbList>
+        <PanelLeft className = "w-4 h-4"/>
           {breadcrumbItems.map((item, index) => (
             <React.Fragment key={index}>
               <BreadcrumbItem>
@@ -90,12 +110,13 @@ const EmployeeOverviewPage: React.FC = () => {
           ))}
         </BreadcrumbList>
       </Breadcrumb>
-      <Card className="max-w-2xl mx-auto">
+      <Card className="max-w-[900px] mx-auto">
         <CardHeader>
           <h1 className="text-2xl font-bold">Employees Overview</h1>
           <p className="text-sm text-gray-600">
             This table provides a clear and organized overview of key employee details for quick reference and easy access.
           </p>
+          
         </CardHeader>
         <CardContent className="rounded-lg overflow-hidden">
           {loading ? (
@@ -134,19 +155,21 @@ const EmployeeOverviewPage: React.FC = () => {
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+                  className="flex items-center justify-between w-[84px] h-[40px] min-w-[80px] p-2 px-3 gap-1 bg-gray-300 text-black rounded-md disabled:opacity-50"
                 >
+                  <ChevronLeft className="w-4 h-4" />
                   Previous
                 </button>
-                <span>
-                  Page {currentPage} of {totalPages}
-                </span>
+                <div className="flex items-center">
+                  {renderPagination()}
+                </div>
                 <button
                   onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+                  className="flex items-center justify-between w-[84px] h-[40px] min-w-[80px] p-2 px-3 gap-1 bg-black text-white rounded-md disabled:opacity-50"
                 >
                   Next
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </>

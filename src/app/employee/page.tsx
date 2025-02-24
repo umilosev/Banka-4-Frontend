@@ -19,13 +19,6 @@ import {
   Search,
 } from 'lucide-react';
 import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -112,33 +105,8 @@ const EmployeeOverviewPage: React.FC = () => {
   // Calculate total pages
   const totalPages = Math.ceil(employees.length / rowsPerPage);
 
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Employees', href: '/employee' },
-  ];
-
   return (
     <div className="p-8">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <PanelLeft className="w-4 h-4" />
-          {breadcrumbItems.map((item, index) => (
-            <React.Fragment key={index}>
-              <BreadcrumbItem>
-                <BreadcrumbLink
-                  href={item.href}
-                  className={
-                    item.label === 'Employees' ? 'font-bold text-black' : ''
-                  }
-                >
-                  {item.label}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              {index < breadcrumbItems.length - 1 && <BreadcrumbSeparator />}
-            </React.Fragment>
-          ))}
-        </BreadcrumbList>
-      </Breadcrumb>
       <Card className="max-w-[900px] mx-auto">
         <CardHeader>
           <h1 className="text-2xl font-bold">Employees Overview</h1>

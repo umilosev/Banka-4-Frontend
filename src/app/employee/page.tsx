@@ -11,7 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Loader2, ChevronRight, ChevronLeft, PanelLeft, Search } from 'lucide-react';
+import {
+  Loader2,
+  ChevronRight,
+  ChevronLeft,
+  PanelLeft,
+  Search,
+} from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -85,17 +91,28 @@ const EmployeeOverviewPage: React.FC = () => {
 
   const filteredEmployees = employees.filter((employee) => {
     return (
-      employee.first_name.toLowerCase().includes(searchFilters.first_name.toLowerCase()) &&
-      employee.last_name.toLowerCase().includes(searchFilters.last_name.toLowerCase()) &&
-      employee.email.toLowerCase().includes(searchFilters.email.toLowerCase()) &&
-      employee.position.toLowerCase().includes(searchFilters.position.toLowerCase())
+      employee.first_name
+        .toLowerCase()
+        .includes(searchFilters.first_name.toLowerCase()) &&
+      employee.last_name
+        .toLowerCase()
+        .includes(searchFilters.last_name.toLowerCase()) &&
+      employee.email
+        .toLowerCase()
+        .includes(searchFilters.email.toLowerCase()) &&
+      employee.position
+        .toLowerCase()
+        .includes(searchFilters.position.toLowerCase())
     );
   });
 
   // Calculate paginated data
   const indexOfLastEmployee = currentPage * rowsPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - rowsPerPage;
-  const currentEmployees = filteredEmployees.slice(indexOfFirstEmployee, indexOfLastEmployee);
+  const currentEmployees = filteredEmployees.slice(
+    indexOfFirstEmployee,
+    indexOfLastEmployee
+  );
 
   // Calculate total pages
   const totalPages = Math.ceil(filteredEmployees.length / rowsPerPage);
@@ -134,7 +151,9 @@ const EmployeeOverviewPage: React.FC = () => {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   href={item.href}
-                  className={item.label === 'Employees' ? 'font-bold text-black' : ''}
+                  className={
+                    item.label === 'Employees' ? 'font-bold text-black' : ''
+                  }
                 >
                   {item.label}
                 </BreadcrumbLink>
@@ -148,7 +167,8 @@ const EmployeeOverviewPage: React.FC = () => {
         <CardHeader>
           <h1 className="text-2xl font-bold">Employees Overview</h1>
           <p className="text-sm text-gray-600">
-            This table provides a clear and organized overview of key employee details for quick reference and easy access.
+            This table provides a clear and organized overview of key employee
+            details for quick reference and easy access.
           </p>
           <div className="flex mt-4 space-x-2">
             <input
@@ -227,18 +247,20 @@ const EmployeeOverviewPage: React.FC = () => {
               </Table>
               <div className="flex justify-between mt-4">
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
                   disabled={currentPage === 1}
                   className="flex items-center justify-between w-[84px] h-[40px] min-w-[80px] p-2 px-3 gap-1 bg-gray-300 text-black rounded-md disabled:opacity-50"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   Previous
                 </button>
-                <div className="flex items-center">
-                  {renderPagination()}
-                </div>
+                <div className="flex items-center">{renderPagination()}</div>
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
                   disabled={currentPage === totalPages}
                   className="flex items-center justify-between w-[84px] h-[40px] min-w-[80px] p-2 px-3 gap-1 bg-black text-white rounded-md disabled:opacity-50"
                 >

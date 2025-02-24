@@ -42,14 +42,16 @@ describe('Employee Overview Page', () => {
   });
 
   it('should paginate through employees', () => {
-    cy.get('button').contains('Next').then(($nextButton) => {
-      if ($nextButton.is(':enabled')) {
-        cy.get('button').contains('Next').click();
-        cy.get('table tbody tr').should('have.length', 5);
-      } else {
-        cy.get('table tbody tr').should('have.length.lte', 5);
-      }
-    });
+    cy.get('button')
+      .contains('Next')
+      .then(($nextButton) => {
+        if ($nextButton.is(':enabled')) {
+          cy.get('button').contains('Next').click();
+          cy.get('table tbody tr').should('have.length', 5);
+        } else {
+          cy.get('table tbody tr').should('have.length.lte', 5);
+        }
+      });
   });
 
   it('should navigate using breadcrumbs', () => {
@@ -60,10 +62,14 @@ describe('Employee Overview Page', () => {
   });
 
   it('should display an error message on network error', () => {
-    cy.intercept('GET', '/employee', { forceNetworkError: true }).as('getEmployees');
+    cy.intercept('GET', '/employee', { forceNetworkError: true }).as(
+      'getEmployees'
+    );
     cy.visit('/employee');
     cy.wait('@getEmployees');
-    cy.get('.text-red-500').should('be.visible').and('contain', 'Failed to fetch employees');
+    cy.get('.text-red-500')
+      .should('be.visible')
+      .and('contain', 'Failed to fetch employees');
   });
 
   it('should display a loading spinner while fetching employees', () => {

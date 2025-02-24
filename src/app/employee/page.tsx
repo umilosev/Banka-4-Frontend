@@ -11,13 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Loader2,
-  ChevronRight,
-  ChevronLeft,
-  PanelLeft,
-  Search,
-} from 'lucide-react';
+import { Loader2, ChevronRight, ChevronLeft, Search } from 'lucide-react';
 import {
   Pagination,
   PaginationContent,

@@ -32,11 +32,11 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from '@/components/ui/pagination';
 
 import { Input } from '@/components/ui/input';
 
-import {Button} from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 
 import { mockEmployees } from './mockDataOverview';
 
@@ -104,7 +104,10 @@ const EmployeeOverviewPage: React.FC = () => {
   // Calculate paginated data
   const indexOfLastEmployee = currentPage * rowsPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - rowsPerPage;
-  const currentEmployees = employees.slice(indexOfFirstEmployee, indexOfLastEmployee);
+  const currentEmployees = employees.slice(
+    indexOfFirstEmployee,
+    indexOfLastEmployee
+  );
 
   // Calculate total pages
   const totalPages = Math.ceil(employees.length / rowsPerPage);
@@ -124,7 +127,9 @@ const EmployeeOverviewPage: React.FC = () => {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   href={item.href}
-                  className={item.label === 'Employees' ? 'font-bold text-black' : ''}
+                  className={
+                    item.label === 'Employees' ? 'font-bold text-black' : ''
+                  }
                 >
                   {item.label}
                 </BreadcrumbLink>
@@ -138,7 +143,8 @@ const EmployeeOverviewPage: React.FC = () => {
         <CardHeader>
           <h1 className="text-2xl font-bold">Employees Overview</h1>
           <p className="text-sm text-gray-600">
-            This table provides a clear and organized overview of key employee details for quick reference and easy access.
+            This table provides a clear and organized overview of key employee
+            details for quick reference and easy access.
           </p>
           <div className="flex mt-4 space-x-2">
             <Input
@@ -211,7 +217,9 @@ const EmployeeOverviewPage: React.FC = () => {
               <div className="flex justify-between mt-4">
                 <Pagination>
                   <PaginationPrevious
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
                     // disabled={currentPage === 1}
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -230,7 +238,9 @@ const EmployeeOverviewPage: React.FC = () => {
                     ))}
                   </PaginationContent>
                   <PaginationNext
-                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
                     // disabled={currentPage === totalPages}
                   >
                     Next

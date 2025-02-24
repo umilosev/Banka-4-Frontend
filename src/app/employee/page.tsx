@@ -28,12 +28,15 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
+
+import { Input } from '@/components/ui/input';
+
+import {Button} from "@/components/ui/button";
 
 import { mockEmployees } from './mockDataOverview';
 
@@ -60,7 +63,6 @@ const EmployeeOverviewPage: React.FC = () => {
     email: '',
     position: '',
   });
-  const [searchFilters, setSearchFilters] = useState(filters);
   const rowsPerPage = 5;
 
   useEffect(() => {
@@ -75,7 +77,6 @@ const EmployeeOverviewPage: React.FC = () => {
         // setEmployees(parsedData);
 
         const parsedData = z.array(employeeSchema).parse(mockEmployees);
-
         setEmployees(parsedData);
       } catch (error) {
         setError('Failed to fetch employees');
@@ -85,7 +86,7 @@ const EmployeeOverviewPage: React.FC = () => {
       }
     };
     fetchEmployees();
-  }, []);
+  }, [currentPage, filters]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -96,61 +97,22 @@ const EmployeeOverviewPage: React.FC = () => {
   };
 
   const handleSearch = () => {
-    setSearchFilters(filters);
     setCurrentPage(1);
+    // Call your backend API with the filters here
   };
-
-  const filteredEmployees = employees.filter((employee) => {
-    return (
-      employee.first_name
-        .toLowerCase()
-        .includes(searchFilters.first_name.toLowerCase()) &&
-      employee.last_name
-        .toLowerCase()
-        .includes(searchFilters.last_name.toLowerCase()) &&
-      employee.email
-        .toLowerCase()
-        .includes(searchFilters.email.toLowerCase()) &&
-      employee.position
-        .toLowerCase()
-        .includes(searchFilters.position.toLowerCase())
-    );
-  });
 
   // Calculate paginated data
   const indexOfLastEmployee = currentPage * rowsPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - rowsPerPage;
-  const currentEmployees = filteredEmployees.slice(
-    indexOfFirstEmployee,
-    indexOfLastEmployee
-  );
+  const currentEmployees = employees.slice(indexOfFirstEmployee, indexOfLastEmployee);
 
   // Calculate total pages
-  const totalPages = Math.ceil(filteredEmployees.length / rowsPerPage);
+  const totalPages = Math.ceil(employees.length / rowsPerPage);
 
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Employees', href: '/employee' },
   ];
-
-  const renderPagination = () => {
-    const pages = [];
-    const totalPages = Math.ceil(employees.length / rowsPerPage);
-
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(
-        <button
-          key={i}
-          onClick={() => setCurrentPage(i)}
-          className={`px-2 py-1 ${i === currentPage ? 'font-bold' : ''}`}
-        >
-          {i}
-        </button>
-      );
-    }
-
-    return pages;
-  };
 
   return (
     <div className="p-8">
@@ -162,9 +124,7 @@ const EmployeeOverviewPage: React.FC = () => {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   href={item.href}
-                  className={
-                    item.label === 'Employees' ? 'font-bold text-black' : ''
-                  }
+                  className={item.label === 'Employees' ? 'font-bold text-black' : ''}
                 >
                   {item.label}
                 </BreadcrumbLink>
@@ -178,49 +138,41 @@ const EmployeeOverviewPage: React.FC = () => {
         <CardHeader>
           <h1 className="text-2xl font-bold">Employees Overview</h1>
           <p className="text-sm text-gray-600">
-            This table provides a clear and organized overview of key employee
-            details for quick reference and easy access.
+            This table provides a clear and organized overview of key employee details for quick reference and easy access.
           </p>
           <div className="flex mt-4 space-x-2">
-            <input
+            <Input
               type="text"
               name="first_name"
-              placeholder="Filter by First Name"
+              placeholder="filter by first name"
               value={filters.first_name}
               onChange={handleFilterChange}
-              className="border p-2 bg-white w-1/4 rounded-md"
             />
-            <input
+            <Input
               type="text"
               name="last_name"
-              placeholder="Filter by Last Name"
+              placeholder="filter by last name"
               value={filters.last_name}
               onChange={handleFilterChange}
-              className="border p-2 bg-white w-1/4 rounded-md"
             />
-            <input
+            <Input
               type="text"
               name="email"
-              placeholder="Filter by Email"
+              placeholder="filter by email"
               value={filters.email}
               onChange={handleFilterChange}
-              className="border p-2 bg-white w-1/4 rounded-md"
             />
-            <input
+            <Input
               type="text"
               name="position"
-              placeholder="Filter by Position"
+              placeholder="filter by position"
               value={filters.position}
               onChange={handleFilterChange}
-              className="border p-2 bg-white w-1/4 rounded-md"
             />
-            <button
-              onClick={handleSearch}
-              className="flex items-center justify-center border border-black text-white bg-black p-2 rounded-md"
-            >
-              <Search className="w-4 h-4 mr-1" />
+            <Button onClick={handleSearch}>
               Search
-            </button>
+              <Search className="w-4 h-4 mr-1" />
+            </Button>
           </div>
         </CardHeader>
         <CardContent className="rounded-lg overflow-hidden">
@@ -257,27 +209,34 @@ const EmployeeOverviewPage: React.FC = () => {
                 </TableBody>
               </Table>
               <div className="flex justify-between mt-4">
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
-                  }
-                  disabled={currentPage === 1}
-                  className="flex items-center justify-between w-[84px] h-[40px] min-w-[80px] p-2 px-3 gap-1 bg-gray-300 text-black rounded-md disabled:opacity-50"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  Previous
-                </button>
-                <div className="flex items-center">{renderPagination()}</div>
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="flex items-center justify-between w-[84px] h-[40px] min-w-[80px] p-2 px-3 gap-1 bg-black text-white rounded-md disabled:opacity-50"
-                >
-                  Next
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+                <Pagination>
+                  <PaginationPrevious
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    // disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Previous
+                  </PaginationPrevious>
+                  <PaginationContent>
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          onClick={() => setCurrentPage(i + 1)}
+                          className={i + 1 === currentPage ? 'font-bold' : ''}
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                  </PaginationContent>
+                  <PaginationNext
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    // disabled={currentPage === totalPages}
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4" />
+                  </PaginationNext>
+                </Pagination>
               </div>
             </>
           )}

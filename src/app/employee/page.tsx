@@ -1,3 +1,217 @@
-export default function EmployeeOverview() {
-  return <h1>Employee overview page</h1>;
-}
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { z } from 'zod';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Loader2 } from 'lucide-react';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+
+const employeeSchema = z.object({
+  id: z.number(),
+  first_name: z.string(),
+  last_name: z.string(),
+  email: z.string(),
+  phone_number: z.string(),
+  position: z.string(),
+  active: z.boolean(),
+});
+
+type Employee = z.infer<typeof employeeSchema>;
+
+const EmployeeOverviewPage: React.FC = () => {
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const rowsPerPage = 5;
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      setLoading(true);
+      try {
+        // temelj za API poziv, do veceras umesto njega samo koristiti mockData.ts 10:13 24.02.2025
+
+        // const res = await fetch('/employee');
+        // const data = await res.json();
+        // const parsedData = z.array(employeeSchema).parse(data);
+        // setEmployees(parsedData);
+
+        const parsedData = z.array(employeeSchema).parse(mockEmployees);
+
+        setEmployees(parsedData);
+      } catch (error) {
+        setError('Failed to fetch employees');
+        console.error('Failed to fetch employees', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEmployees();
+  }, []);
+
+  // Calculate paginated data
+  const indexOfLastEmployee = currentPage * rowsPerPage;
+  const indexOfFirstEmployee = indexOfLastEmployee - rowsPerPage;
+  const currentEmployees = employees.slice(indexOfFirstEmployee, indexOfLastEmployee);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(employees.length / rowsPerPage);
+
+  const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Employees', href: '/employee' },
+  ];
+
+  return (
+    <div className="p-8">
+      <Breadcrumb>
+        <BreadcrumbList>
+          {breadcrumbItems.map((item, index) => (
+            <React.Fragment key={index}>
+              <BreadcrumbItem>
+                <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+              </BreadcrumbItem>
+              {index < breadcrumbItems.length - 1 && <BreadcrumbSeparator />}
+            </React.Fragment>
+          ))}
+        </BreadcrumbList>
+      </Breadcrumb>
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader>
+          <h1 className="text-2xl font-bold">Employees Overview</h1>
+          <p className="text-sm text-gray-600">
+            This table provides a clear and organized overview of key employee details for quick reference and easy access.
+          </p>
+        </CardHeader>
+        <CardContent className="rounded-lg overflow-hidden">
+          {loading ? (
+            <div className="flex justify-center p-4">
+              <Loader2 className="animate-spin w-6 h-6" />
+            </div>
+          ) : error ? (
+            <div className="text-red-500">{error}</div>
+          ) : (
+            <>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>First Name</TableHead>
+                    <TableHead>Last Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone Number</TableHead>
+                    <TableHead>Position</TableHead>
+                    <TableHead>Active</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {currentEmployees.map((employee) => (
+                    <TableRow key={employee.id}>
+                      <TableCell>{employee.first_name}</TableCell>
+                      <TableCell>{employee.last_name}</TableCell>
+                      <TableCell>{employee.email}</TableCell>
+                      <TableCell>{employee.phone_number}</TableCell>
+                      <TableCell>{employee.position}</TableCell>
+                      <TableCell>{employee.active ? 'Yes' : 'No'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default EmployeeOverviewPage;
+
+export const mockEmployees = [
+  {
+    id: 1,
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john.doe@example.com',
+    phone_number: '123-456-7890',
+    position: 'Software Engineer',
+    active: true,
+  },
+  {
+    id: 2,
+    first_name: 'Jane',
+    last_name: 'Smith',
+    email: 'jane.smith@example.com',
+    phone_number: '987-654-3210',
+    position: 'Product Manager',
+    active: false,
+  },
+  {
+    id: 3,
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john.doe@example.com',
+    phone_number: '123-456-7890',
+    position: 'Software Engineer',
+    active: true,
+  },
+  {
+    id: 4,
+    first_name: 'Jane',
+    last_name: 'Smith',
+    email: 'jane.smith@example.com',
+    phone_number: '987-654-3210',
+    position: 'Product Manager',
+    active: false,
+  },
+  {
+    id: 5,
+    first_name: 'John',
+    last_name: 'Doe',
+    email: 'john.doe@example.com',
+    phone_number: '123-456-7890',
+    position: 'Software Engineer',
+    active: true,
+  },
+  {
+    id: 6,
+    first_name: 'Jane',
+    last_name: 'Smith',
+    email: 'jane.smith@example.com',
+    phone_number: '987-654-3210',
+    position: 'Product Manager',
+    active: false,
+  },
+];

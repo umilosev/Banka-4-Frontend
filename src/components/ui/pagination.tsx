@@ -30,7 +30,11 @@ const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<'li'>
 >(({ className, ...props }, ref) => (
-  <li ref={ref} className={cn('', className)} {...props} />
+  <li
+    ref={ref}
+    className={cn('cursor-pointer select-none', className)}
+    {...props}
+  />
 ));
 PaginationItem.displayName = 'PaginationItem';
 
@@ -82,7 +86,7 @@ const PaginationNext = ({
   <PaginationLink
     aria-label="Go to next page"
     size="default"
-    className={cn('gap-1 pr-2.5', className)}
+    className={cn('gap-1 pr-2.5 bg-black text-white', className)}
     {...props}
   >
     <span>Next</span>
@@ -114,7 +118,6 @@ interface PaginationProps {
   onChangePage?: (currentPage: number) => void;
 }
 
-//CurrentPage i pageCount
 const PaginationSection = ({
   pageCount,
   currentPage,
@@ -133,7 +136,7 @@ const PaginationSection = ({
   };
 
   return (
-    <div className="flex mt-5 justify-between items-center">
+    <div className="flex mt-4 justify-between items-center">
       {pageCount >= 2 && (
         <Pagination>
           <PaginationContent>
@@ -207,10 +210,7 @@ const PaginationSection = ({
             )}
 
             <PaginationItem>
-              <PaginationNext
-                onClick={() => handleNextPage()}
-                className="bg-black text-white"
-              />
+              <PaginationNext onClick={() => handleNextPage()} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

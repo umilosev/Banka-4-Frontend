@@ -36,7 +36,6 @@ type Employee = z.infer<typeof employeeSchema>;
 const EmployeeOverviewPage: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filters, setFilters] = useState({
     first_name: '',
@@ -59,9 +58,6 @@ const EmployeeOverviewPage: React.FC = () => {
 
         const parsedData = z.array(employeeSchema).parse(mockEmployees);
         setEmployees(parsedData);
-      } catch (error) {
-        setError('Failed to fetch employees');
-        console.error('Failed to fetch employees', error);
       } finally {
         setLoading(false);
       }
@@ -102,7 +98,7 @@ const EmployeeOverviewPage: React.FC = () => {
             This table provides a clear and organized overview of key employee
             details for quick reference and easy access.
           </p>
-          <div className="flex mb-4 space-x-2">
+          <div className="flex mt-4 space-x-2">
             <Input
               type="text"
               name="first_name"
@@ -142,8 +138,6 @@ const EmployeeOverviewPage: React.FC = () => {
             <div className="flex justify-center p-4">
               <Loader2 className="animate-spin w-6 h-6" />
             </div>
-          ) : error ? (
-            <div className="text-red-500">{error}</div>
           ) : (
             <>
               <Table>
@@ -157,17 +151,26 @@ const EmployeeOverviewPage: React.FC = () => {
                     <TableHead>Active</TableHead>
                   </TableRow>
                 </TableHeader>
+
                 <TableBody>
-                  {currentEmployees.map((employee) => (
-                    <TableRow key={employee.id}>
-                      <TableCell>{employee.first_name}</TableCell>
-                      <TableCell>{employee.last_name}</TableCell>
-                      <TableCell>{employee.email}</TableCell>
-                      <TableCell>{employee.phone_number}</TableCell>
-                      <TableCell>{employee.position}</TableCell>
-                      <TableCell>{employee.active ? 'Yes' : 'No'}</TableCell>
+                  {currentEmployees.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center">
+                        There are currently no employees
+                      </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    currentEmployees.map((employee) => (
+                      <TableRow key={employee.id}>
+                        <TableCell>{employee.first_name}</TableCell>
+                        <TableCell>{employee.last_name}</TableCell>
+                        <TableCell>{employee.email}</TableCell>
+                        <TableCell>{employee.phone_number}</TableCell>
+                        <TableCell>{employee.position}</TableCell>
+                        <TableCell>{employee.active ? 'Yes' : 'No'}</TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
               <PaginationSection

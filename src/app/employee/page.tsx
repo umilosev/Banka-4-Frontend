@@ -98,11 +98,11 @@ const EmployeeOverviewPage: React.FC = () => {
       <Card className="max-w-[900px] mx-auto">
         <CardHeader>
           <h1 className="text-2xl font-bold">Employees Overview</h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-zinc-500">
             This table provides a clear and organized overview of key employee
             details for quick reference and easy access.
           </p>
-          <div className="flex mt-4 space-x-2">
+          <div className="flex mb-4 space-x-2">
             <Input
               type="text"
               name="first_name"

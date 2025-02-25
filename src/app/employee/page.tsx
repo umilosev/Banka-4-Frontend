@@ -11,15 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Loader2, ChevronRight, ChevronLeft, Search } from 'lucide-react';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
+import { Loader2, Search } from 'lucide-react';
+
+import { PaginationSection } from '@/components/ui/pagination';
 
 import { Input } from '@/components/ui/input';
 
@@ -50,7 +44,7 @@ const EmployeeOverviewPage: React.FC = () => {
     email: '',
     position: '',
   });
-  const rowsPerPage = 5;
+  const rowsPerPage = 8;
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -176,40 +170,13 @@ const EmployeeOverviewPage: React.FC = () => {
                   ))}
                 </TableBody>
               </Table>
-              <div className="flex justify-between mt-4">
-                <Pagination>
-                  <PaginationPrevious
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                    // disabled={currentPage === 1}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Previous
-                  </PaginationPrevious>
-                  <PaginationContent>
-                    {Array.from({ length: totalPages }, (_, i) => (
-                      <PaginationItem key={i}>
-                        <PaginationLink
-                          onClick={() => setCurrentPage(i + 1)}
-                          className={i + 1 === currentPage ? 'font-bold' : ''}
-                        >
-                          {i + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-                  </PaginationContent>
-                  <PaginationNext
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    // disabled={currentPage === totalPages}
-                  >
-                    Next
-                    <ChevronRight className="w-4 h-4" />
-                  </PaginationNext>
-                </Pagination>
-              </div>
+              <PaginationSection
+                pageCount={totalPages}
+                currentPage={currentPage}
+                onChangePage={setCurrentPage}
+                resultsLength={employees.length}
+                pageSize={rowsPerPage}
+              ></PaginationSection>
             </>
           )}
         </CardContent>

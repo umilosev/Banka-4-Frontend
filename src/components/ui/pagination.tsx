@@ -20,7 +20,7 @@ const PaginationContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ul
     ref={ref}
-    className={cn('flex flex-row items-center gap-1', className)}
+    className={cn('flex flex-row items-center gap-2', className)}
     {...props}
   />
 ));
@@ -41,9 +41,11 @@ PaginationItem.displayName = 'PaginationItem';
 type PaginationLinkProps = {
   isActive?: boolean;
 } & Pick<ButtonProps, 'size'> &
+  Pick<ButtonProps, 'variant'> &
   React.ComponentProps<'a'>;
 
 const PaginationLink = ({
+  variant = 'ghost',
   className,
   isActive,
   size = 'icon',
@@ -53,7 +55,7 @@ const PaginationLink = ({
     aria-current={isActive ? 'page' : undefined}
     className={cn(
       buttonVariants({
-        variant: isActive ? 'outline' : 'ghost',
+        variant: isActive ? 'outline' : variant,
         size,
       }),
       className
@@ -64,10 +66,12 @@ const PaginationLink = ({
 PaginationLink.displayName = 'PaginationLink';
 
 const PaginationPrevious = ({
+  variant,
   className,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
+    variant={variant}
     aria-label="Go to previous page"
     size="default"
     className={cn('gap-1 pl-2.5', className)}
@@ -80,13 +84,15 @@ const PaginationPrevious = ({
 PaginationPrevious.displayName = 'PaginationPrevious';
 
 const PaginationNext = ({
+  variant,
   className,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
+    variant={variant}
     aria-label="Go to next page"
     size="default"
-    className={cn('gap-1 pr-2.5 bg-black text-white', className)}
+    className={cn('gap-1 pr-2.5', className)}
     {...props}
   >
     <span>Next</span>
@@ -141,15 +147,15 @@ const PaginationSection = ({
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious onClick={() => handlePreviousPage()} />
+              <PaginationPrevious
+                variant={'secondary'}
+                onClick={() => handlePreviousPage()}
+              />
             </PaginationItem>
             {pageCount > 5 && (
               <PaginationItem key={1}>
                 {pageCount < 7 || currentPage < 4 ? (
                   <PaginationLink
-                    className={
-                      currentPage === 1 ? 'bg-neutral-300' : 'bg-neutral-200'
-                    }
                     onClick={() => onChangePage && onChangePage(1)}
                   >
                     1
@@ -177,9 +183,7 @@ const PaginationSection = ({
               return (
                 <PaginationItem key={page}>
                   <PaginationLink
-                    className={
-                      currentPage === page ? 'bg-neutral-300' : 'bg-neutral-200'
-                    }
+                    isActive={currentPage === page}
                     onClick={() => onChangePage && onChangePage(page)}
                   >
                     {page}
@@ -191,12 +195,7 @@ const PaginationSection = ({
               <PaginationItem key={7}>
                 {pageCount < 7 || currentPage + 3 >= pageCount ? (
                   <PaginationLink
-                    className={
-                      (pageCount < 7 && currentPage === pageCount) ||
-                      (pageCount >= 7 && currentPage === pageCount)
-                        ? 'bg-neutral-300'
-                        : 'bg-neutral-200'
-                    }
+                    isActive={currentPage === 7}
                     onClick={() => onChangePage && onChangePage(pageCount)}
                   >
                     {pageCount}
@@ -210,7 +209,10 @@ const PaginationSection = ({
             )}
 
             <PaginationItem>
-              <PaginationNext onClick={() => handleNextPage()} />
+              <PaginationNext
+                variant={'default'}
+                onClick={() => handleNextPage()}
+              />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

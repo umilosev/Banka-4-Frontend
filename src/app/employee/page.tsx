@@ -98,7 +98,7 @@ const EmployeeOverviewPage: React.FC = () => {
             This table provides a clear and organized overview of key employee
             details for quick reference and easy access.
           </p>
-          <div className="flex mt-4 space-x-2">
+          <div className="flex mb-4 space-x-2">
             <Input
               type="text"
               name="first_name"
@@ -155,7 +155,10 @@ const EmployeeOverviewPage: React.FC = () => {
                 <TableBody>
                   {currentEmployees.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center">
+                      <TableCell
+                        colSpan={6}
+                        className="text-center p-6 text-zinc-500"
+                      >
                         There are currently no employees
                       </TableCell>
                     </TableRow>

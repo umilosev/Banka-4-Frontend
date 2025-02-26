@@ -1,5 +1,7 @@
 'use client';
-import EmployeeForm from '@/components/employee/employee-form';
+import EmployeeForm, {
+  EmployeeFormValues,
+} from '@/components/employee/employee-form';
 import {
   Card,
   CardContent,
@@ -7,7 +9,22 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-export default function NewEmployeePage() {
+
+export default function EditEmployeePage() {
+  const employee: EmployeeFormValues = {
+    firstName: 'John',
+    lastName: 'Doe',
+    dateOfBirth: new Date('1990-05-15'),
+    email: 'john.doe@example.com',
+    address: '123 Main Street, Belgrade',
+    phoneNumber: '+381612345678',
+    position: 'Software Engineer',
+    username: 'johndoe',
+    department: 'IT',
+    gender: 'male',
+    isActive: true,
+  };
+
   return (
     <div>
       <div className="flex justify-center items-center pt-16">
@@ -21,20 +38,8 @@ export default function NewEmployeePage() {
           </CardHeader>
           <CardContent>
             <EmployeeForm
-              onSubmit={(data) => console.log('Creating Employee:', data)}
-              defaultValues={{
-                firstName: '',
-                lastName: '',
-                dateOfBirth: undefined,
-                email: '',
-                address: '',
-                phoneNumber: '',
-                position: '',
-                username: '',
-                department: '',
-                gender: 'male',
-                isActive: true,
-              }}
+              onSubmit={(data) => console.log('Editing Employee:', data)}
+              defaultValues={employee}
             />
           </CardContent>
         </Card>

@@ -7,6 +7,7 @@ import {
   EmployeeOverviewResponseDto,
   EmployeeResponseDto,
 } from '@/api/response/employee';
+import { CardResponseDto } from './response/cards';
 
 export const getEmployeeById = async (client: Axios, id: string) =>
   client.get<EmployeeResponseDto>(`/employee/${id}`);
@@ -37,3 +38,19 @@ export const searchEmployees = async (
     params: { ...filters, size: rowsPerPage, page: currentPage },
   });
 };
+
+export const searchCards = async (
+  client: Axios,
+  filters: {
+    cardName: string;
+    ownerName: string;
+    email: string;
+    position: string;
+  },
+  rowsPerPage: number,
+  currentPage: number
+) => {
+  return client.get<CardResponseDto>('/employee/search', {
+    params: { ...filters, size: rowsPerPage, page: currentPage },
+  });
+}

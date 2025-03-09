@@ -127,6 +127,14 @@ const EmployeeGroups: SidebarGroupType[] = [
     ],
   },
   {
+    title: 'Cards',
+    url: '/e/employee/cards',
+    icon: BriefcaseBusiness,
+    items: undefined,
+    isActive: false,
+    userType: 'employee',
+  },
+  {
     title: 'Employees',
     url: '/e/employee',
     icon: BriefcaseBusiness,

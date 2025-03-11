@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { CardResponseDto } from '@/api/response/cards';
+import { Button } from '@/components/ui/button';
 
 export const cardsColumns: ColumnDef<CardResponseDto>[] = [
   {
@@ -24,12 +25,29 @@ export const cardsColumns: ColumnDef<CardResponseDto>[] = [
   },
   {
     accessorKey: 'cardStatus',
-    header: 'Position',
+    header: 'Card Status',
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: 'active',
-    header: 'Active',
-    cell: (info) => (info.getValue() ? 'Yes' : 'No'),
+    accessorKey: 'actions',
+    header: 'Actions',
+    cell: ({ row }) => (
+      <div className="flex space-x-2">
+          <Button
+            variant="default"
+            onClick={() => {}}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              // Handle delete action
+            }}
+          >
+            Deactivate
+          </Button>
+      </div>
+    ),
   },
 ];

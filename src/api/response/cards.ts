@@ -12,4 +12,4 @@ export interface CardResponseDto {
     accountNumber:string;
 }
 
-export type EmployeeOverviewResponseDto = Pageable<CardResponseDto>;
+export type EmployeeCardResponseDto = Pageable<CardResponseDto>;

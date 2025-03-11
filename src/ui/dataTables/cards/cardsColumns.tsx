@@ -23,17 +23,17 @@ export const cardsColumns = ({
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: 'firstName',
+    accessorKey: 'client.firstName',
     header: 'First Name',
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: 'lastName',
+    accessorKey: 'client.lastName',
     header: 'Last Name',
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: 'email',
+    accessorKey: 'client.email',
     header: 'Email',
     cell: (info) => info.getValue(),
   },

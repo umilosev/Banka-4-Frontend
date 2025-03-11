@@ -1,7 +1,6 @@
 import { MaybePromise } from '@/types/MaybePromise';
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,

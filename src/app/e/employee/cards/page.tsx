@@ -19,8 +19,7 @@ import useTablePageParams from '@/hooks/useTablePageParams';
 import FilterBar from '@/components/filters/FilterBar';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CardResponseDto } from '@/api/response/cards';
-import {blockCard, unblockCard, deactivateCard} from '@/api/cards';
-import { set } from 'date-fns';
+import { blockCard, unblockCard, deactivateCard } from '@/api/cards';
 
 interface CardFilter {
   cardNumber: string;
@@ -65,7 +64,6 @@ const EmployeeManageCardsPage: React.FC = () => {
   const [dialogButtonText, setDialogButtonText] = useState('');
   const [currentCard, setCurrentCard] = useState<CardResponseDto | null>(null);
 
-  const router = useRouter();
   const client = useHttpClient();
 
   const { data, isLoading } = useQuery({
@@ -90,7 +88,9 @@ const EmployeeManageCardsPage: React.FC = () => {
   const handleConfirm = async () => {
     if (currentCard) {
       try {
-        console.log(`Performing action: ${dialogButtonText} on card: ${currentCard.cardNumber}`);
+        console.log(
+          `Performing action: ${dialogButtonText} on card: ${currentCard.cardNumber}`
+        );
         if (dialogButtonText === 'Block') {
           await blockCard(client, currentCard.cardNumber);
         } else if (dialogButtonText === 'Unblock') {

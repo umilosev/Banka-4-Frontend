@@ -42,15 +42,16 @@ export const searchEmployees = async (
 export const searchCards = async (
   client: Axios,
   filters: {
-    cardName: string;
-    ownerName: string;
+    cardNumber: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    position: string;
+    cardStatus: string;
   },
   rowsPerPage: number,
   currentPage: number
 ) => {
-  return client.get<CardResponseDto>('/employee/search', {
+  return client.get<CardResponseDto>('/cards/employee/search', {
     params: { ...filters, size: rowsPerPage, page: currentPage },
   });
 }

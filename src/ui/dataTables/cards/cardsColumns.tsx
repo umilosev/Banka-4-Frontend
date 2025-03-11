@@ -50,9 +50,19 @@ export const cardsColumns = ({
 
       const handleBlockUnblock = () => {
         setCurrentCard(card);
-        setDialogTitle(card.cardStatus === 'Blocked' ? 'Confirm Unblocking the Card' : 'Confirm Blocking the Card');
-        setDialogDescription(card.cardStatus === 'Blocked' ? 'Are you sure you want to unblock the card' : 'Are you sure you want to block the card');
-        setDialogButtonText(card.cardStatus === 'Blocked' ? 'Unblock' : 'Block');
+        setDialogTitle(
+          card.cardStatus === 'Blocked'
+            ? 'Confirm Unblocking the Card'
+            : 'Confirm Blocking the Card'
+        );
+        setDialogDescription(
+          card.cardStatus === 'Blocked'
+            ? 'Are you sure you want to unblock the card'
+            : 'Are you sure you want to block the card'
+        );
+        setDialogButtonText(
+          card.cardStatus === 'Blocked' ? 'Unblock' : 'Block'
+        );
         setDialogOpen(true);
       };
 

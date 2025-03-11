@@ -20,7 +20,6 @@ import FilterBar from '@/components/filters/FilterBar';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CardResponseDto } from '@/api/response/cards';
 
-
 interface CardFilter {
   cardNumber: string;
   firstName: string;
@@ -45,10 +44,10 @@ const cardFilterKeyToName = (key: keyof CardFilter): string => {
 };
 
 const EmployeeManageCardsPage: React.FC = () => {
-  const { page, pageSize, setPage, setPageSize } = useTablePageParams(
-    'cards',
-    { pageSize: 8, page: 0 }
-  );
+  const { page, pageSize, setPage, setPageSize } = useTablePageParams('cards', {
+    pageSize: 8,
+    page: 0,
+  });
 
   const [searchFilter, setSearchFilter] = useState<CardFilter>({
     cardNumber: '',
@@ -70,12 +69,7 @@ const EmployeeManageCardsPage: React.FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['card', page, pageSize, searchFilter],
     queryFn: async () => {
-      const response = await searchCards(
-        client,
-        searchFilter,
-        pageSize,
-        page
-      );
+      const response = await searchCards(client, searchFilter, pageSize, page);
       return response.data;
     },
   });
@@ -93,7 +87,6 @@ const EmployeeManageCardsPage: React.FC = () => {
 
   const handleConfirm = async () => {
     if (currentCard) {
-      
       if (dialogButtonText === 'Block') {
         // Block poziv
       } else if (dialogButtonText === 'Unblock') {
@@ -116,8 +109,8 @@ const EmployeeManageCardsPage: React.FC = () => {
           <CardHeader>
             <h1 className="text-2xl font-bold">Cards Overview</h1>
             <CardDescription>
-              This table provides a clear and organized overview of all cards in the bank
-              and key details about them.
+              This table provides a clear and organized overview of all cards in
+              the bank and key details about them.
             </CardDescription>
             <FilterBar<CardFilter>
               filterKeyToName={cardFilterKeyToName}
@@ -130,9 +123,6 @@ const EmployeeManageCardsPage: React.FC = () => {
           </CardHeader>
           <CardContent className="rounded-lg overflow-hidden">
             <DataTable
-              onRowClick={(row) => {
-                // router.push(`/e/employee/${row.original.id}/edit`)
-              }}
               columns={cardsColumns({
                 setCurrentCard,
                 setDialogTitle,
@@ -140,7 +130,7 @@ const EmployeeManageCardsPage: React.FC = () => {
                 setDialogButtonText,
                 setDialogOpen,
               })}
-              data={data?.content ?? [] }
+              data={data?.content ?? []}
               isLoading={isLoading}
               pageCount={data?.page.totalPages ?? 0}
               pagination={{ page: page, pageSize }}

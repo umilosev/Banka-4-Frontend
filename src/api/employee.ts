@@ -54,4 +54,4 @@ export const searchCards = async (
   return client.get<EmployeeCardResponseDto>('/cards/employee/search', {
     params: { ...filters, size: rowsPerPage, page: currentPage },
   });
-}
+};

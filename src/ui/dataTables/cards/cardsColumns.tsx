@@ -2,25 +2,39 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CardResponseDto } from '@/api/response/cards';
 import { Button } from '@/components/ui/button';
 
-export const cardsColumns: ColumnDef<CardResponseDto>[] = [
+interface CardsColumnsProps {
+  setCurrentCard: (card: CardResponseDto) => void;
+  setDialogTitle: (title: string) => void;
+  setDialogDescription: (description: string) => void;
+  setDialogButtonText: (text: string) => void;
+  setDialogOpen: (open: boolean) => void;
+}
+
+export const cardsColumns = ({
+  setCurrentCard,
+  setDialogTitle,
+  setDialogDescription,
+  setDialogButtonText,
+  setDialogOpen,
+}: CardsColumnsProps): ColumnDef<CardResponseDto>[] => [
   {
     accessorKey: 'cardNumber',
-    header: 'Card Name',
+    header: 'Card Number',
     cell: (info) => info.getValue(),
   },
   {
     accessorKey: 'firstName',
-    header: 'Last Name',
+    header: 'First Name',
     cell: (info) => info.getValue(),
   },
   {
     accessorKey: 'lastName',
-    header: 'Email',
+    header: 'Last Name',
     cell: (info) => info.getValue(),
   },
   {
     accessorKey: 'email',
-    header: 'Phone Number',
+    header: 'Email',
     cell: (info) => info.getValue(),
   },
   {
@@ -35,15 +49,19 @@ export const cardsColumns: ColumnDef<CardResponseDto>[] = [
       const card = row.original;
 
       const handleBlockUnblock = () => {
-        if (card.cardStatus === 'Blocked') {
-          // Handle unblock action
-        } else {
-          // Handle block action
-        }
+        setCurrentCard(card);
+        setDialogTitle(card.cardStatus === 'Blocked' ? 'Confirm Unblocking the Card' : 'Confirm Blocking the Card');
+        setDialogDescription(card.cardStatus === 'Blocked' ? 'Are you sure you want to unblock the card' : 'Are you sure you want to block the card');
+        setDialogButtonText(card.cardStatus === 'Blocked' ? 'Unblock' : 'Block');
+        setDialogOpen(true);
       };
 
       const handleDeactivate = () => {
-        // Handle deactivate action
+        setCurrentCard(card);
+        setDialogTitle('Confirm Deactivating the Card');
+        setDialogDescription('Are you sure you want to deactivate the card');
+        setDialogButtonText('Deactivate');
+        setDialogOpen(true);
       };
 
       return (

@@ -12,13 +12,15 @@ import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import GuardBlock from '@/components/GuardBlock';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { searchCards } from '@/api/employee';
+import { searchCards } from '@/api/cards';
 import { DataTable } from '@/components/dataTable/DataTable';
 import { cardsColumns } from '@/ui/dataTables/cards/cardsColumns';
 import useTablePageParams from '@/hooks/useTablePageParams';
 import FilterBar from '@/components/filters/FilterBar';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CardResponseDto } from '@/api/response/cards';
+import {blockCard, unblockCard, deactivateCard} from '@/api/cards';
+import { set } from 'date-fns';
 
 interface CardFilter {
   cardNumber: string;
@@ -87,18 +89,28 @@ const EmployeeManageCardsPage: React.FC = () => {
 
   const handleConfirm = async () => {
     if (currentCard) {
-      if (dialogButtonText === 'Block') {
-        // Block poziv
-      } else if (dialogButtonText === 'Unblock') {
-        // Unblock poziv
-      } else if (dialogButtonText === 'Deactivate') {
-        // Deactivate poziv
+      try {
+        console.log(`Performing action: ${dialogButtonText} on card: ${currentCard.cardNumber}`);
+        if (dialogButtonText === 'Block') {
+          await blockCard(client, currentCard.cardNumber);
+        } else if (dialogButtonText === 'Unblock') {
+          await unblockCard(client, currentCard.cardNumber);
+        } else if (dialogButtonText === 'Deactivate') {
+          await deactivateCard(client, currentCard.cardNumber);
+        }
+        // Optionally, you can refetch the data to update the table
+        // queryClient.invalidateQueries(['card', page, pageSize, searchFilter]);
+      } catch (error) {
+        console.error('Error performing action:', error);
+      } finally {
+        setCurrentCard(null);
+        setDialogOpen(false);
       }
-      setDialogOpen(false);
     }
   };
 
   const handleCancel = () => {
+    setCurrentCard(null);
     setDialogOpen(false);
   };
 

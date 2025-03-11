@@ -1,15 +1,15 @@
 import { Pageable } from '@/types/pageable';
 
 export interface CardResponseDto {
-    id:string;
-    type:string;
+    cardNumber:string;
+    cvv:string;
     cardName:string;
     creationDate:string;
     expirationDate:string;
-    accountNumber:string;
-    cvvCode:string;
+    cardType:string;
     limit:number;
-    status:string;
+    cardStatus:string;
+    accountNumber:string;
 }
 
 export type EmployeeOverviewResponseDto = Pageable<CardResponseDto>;

@@ -31,23 +31,38 @@ export const cardsColumns: ColumnDef<CardResponseDto>[] = [
   {
     accessorKey: 'actions',
     header: 'Actions',
-    cell: ({ row }) => (
-      <div className="flex space-x-2">
+    cell: ({ row }) => {
+      const card = row.original;
+
+      const handleBlockUnblock = () => {
+        if (card.cardStatus === 'Blocked') {
+          // Handle unblock action
+        } else {
+          // Handle block action
+        }
+      };
+
+      const handleDeactivate = () => {
+        // Handle deactivate action
+      };
+
+      return (
+        <div className="flex space-x-2">
           <Button
-            variant="default"
-            onClick={() => {}}
+            variant={card.cardStatus === 'Blocked' ? 'default' : 'destructive'}
+            onClick={handleBlockUnblock}
           >
-            Edit
+            {card.cardStatus === 'Blocked' ? 'Unblock' : 'Block'}
           </Button>
           <Button
             variant="destructive"
-            onClick={() => {
-              // Handle delete action
-            }}
+            onClick={handleDeactivate}
+            disabled={card.cardStatus === 'Deactivated'}
           >
             Deactivate
           </Button>
-      </div>
-    ),
+        </div>
+      );
+    },
   },
 ];

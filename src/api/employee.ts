@@ -7,7 +7,7 @@ import {
   EmployeeOverviewResponseDto,
   EmployeeResponseDto,
 } from '@/api/response/employee';
-import { CardResponseDto } from './response/cards';
+import { EmployeeCardResponseDto } from './response/cards';
 
 export const getEmployeeById = async (client: Axios, id: string) =>
   client.get<EmployeeResponseDto>(`/employee/${id}`);
@@ -51,7 +51,7 @@ export const searchCards = async (
   rowsPerPage: number,
   currentPage: number
 ) => {
-  return client.get<CardResponseDto>('/cards/employee/search', {
+  return client.get<EmployeeCardResponseDto>('/cards/employee/search', {
     params: { ...filters, size: rowsPerPage, page: currentPage },
   });
 }

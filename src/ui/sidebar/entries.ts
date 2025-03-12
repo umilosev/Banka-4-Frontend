@@ -128,7 +128,7 @@ const EmployeeGroups: SidebarGroupType[] = [
   },
   {
     title: 'Cards',
-    url: '/e/employee/cards',
+    url: '/e/cards',
     icon: BriefcaseBusiness,
     items: undefined,
     isActive: false,

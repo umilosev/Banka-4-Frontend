@@ -80,7 +80,7 @@ const EmployeeManageCardsPage: React.FC = () => {
       type: 'SET_BREADCRUMB',
       items: [
         { title: 'Home', url: '/e' },
-        { title: 'Cards', url: '/e/employee/cards' },
+        { title: 'Cards', url: '/e/cards' },
       ],
     });
   }, [dispatch]);

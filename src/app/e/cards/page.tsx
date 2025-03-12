@@ -10,14 +10,13 @@ import {
 import { useHttpClient } from '@/context/HttpClientContext';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import GuardBlock from '@/components/GuardBlock';
-import { useRouter } from 'next/navigation';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  searchCards,
   blockCard,
-  unblockCard,
-  deactivateCard,
   CardFilter,
+  deactivateCard,
+  searchCards,
+  unblockCard,
 } from '@/api/cards';
 import { DataTable } from '@/components/dataTable/DataTable';
 import { cardsColumns } from '@/ui/dataTables/cards/cardsColumns';
@@ -25,9 +24,9 @@ import useTablePageParams from '@/hooks/useTablePageParams';
 import { FilterBar, FilterDefinition } from '@/components/filters/FilterBar';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CardResponseDto } from '@/api/response/cards';
-import {} from '@/api/cards';
 import { toastRequestError } from '@/api/errors';
 import { toast } from 'sonner';
+import { ALL_CARD_STATUSES } from '@/types/card';
 
 const EmployeeManageCardsPage: React.FC = () => {
   const { page, pageSize, setPage, setPageSize } = useTablePageParams('cards', {
@@ -36,12 +35,13 @@ const EmployeeManageCardsPage: React.FC = () => {
   });
 
   const [cardFilter, setCardFilter] = useState<CardFilter>({
-    cardNumber: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    cardStatus: '',
+    cardNumber: undefined,
+    firstName: undefined,
+    lastName: undefined,
+    email: undefined,
+    cardStatus: undefined,
   });
+
   const cardFilterColumns: Record<keyof CardFilter, FilterDefinition> = {
     cardNumber: {
       filterType: 'string',
@@ -60,8 +60,10 @@ const EmployeeManageCardsPage: React.FC = () => {
       placeholder: 'Enter email',
     },
     cardStatus: {
-      filterType: 'string',
+      filterType: 'enum',
       placeholder: 'Enter card status',
+      options: ALL_CARD_STATUSES,
+      optionToString: (option) => option,
     },
   };
 
@@ -102,16 +104,16 @@ const EmployeeManageCardsPage: React.FC = () => {
     setCurrentCard(card);
     setUndoable(false);
     setDialogTitle(
-      card.cardStatus === 'Blocked'
+      card.cardStatus === 'BLOCKED'
         ? 'Confirm Unblocking the Card'
         : 'Confirm Blocking the Card'
     );
     setDialogDescription(
-      card.cardStatus === 'Blocked'
+      card.cardStatus === 'BLOCKED'
         ? 'Are you sure you want to unblock the card'
         : 'Are you sure you want to block the card'
     );
-    setDialogButtonText(card.cardStatus === 'Blocked' ? 'Unblock' : 'Block');
+    setDialogButtonText(card.cardStatus === 'BLOCKED' ? 'Unblock' : 'Block');
     setDialogOpen(true);
   };
 

@@ -1,15 +1,10 @@
 import { EmployeeCardResponseDto } from './response/cards';
 import { Axios } from 'axios';
+import { CardStatus } from '@/types/card';
 
 export const searchCards = async (
   client: Axios,
-  filters: {
-    cardNumber: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    cardStatus: string;
-  },
+  filters: CardFilter,
   rowsPerPage: number,
   currentPage: number
 ) => {
@@ -27,10 +22,10 @@ export const unblockCard = async (client: Axios, cardNumber: string) =>
 export const deactivateCard = async (client: Axios, cardNumber: string) =>
   client.put<void>(`cards/deactivate/${cardNumber}`);
 
-export interface CardFilter {
+export type CardFilter = Partial<{
   cardNumber: string;
   firstName: string;
   lastName: string;
   email: string;
-  cardStatus: string;
-}
+  cardStatus: CardStatus;
+}>;

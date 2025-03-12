@@ -11,7 +11,7 @@ import { useHttpClient } from '@/context/HttpClientContext';
 import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import GuardBlock from '@/components/GuardBlock';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { searchCards } from '@/api/cards';
 import { DataTable } from '@/components/dataTable/DataTable';
 import { cardsColumns } from '@/ui/dataTables/cards/cardsColumns';
@@ -21,6 +21,7 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CardResponseDto } from '@/api/response/cards';
 import { blockCard, unblockCard, deactivateCard } from '@/api/cards';
 import { toastRequestError } from '@/api/errors';
+import { toast } from 'sonner';
 
 interface CardFilter {
   cardNumber: string;
@@ -65,7 +66,48 @@ const EmployeeManageCardsPage: React.FC = () => {
   const [dialogButtonText, setDialogButtonText] = useState('');
   const [currentCard, setCurrentCard] = useState<CardResponseDto | null>(null);
 
+  const { mutate: doBlock } = useMutation({
+    mutationKey: ['card', currentCard?.cardNumber],
+    mutationFn: async (cardNumber: string) => blockCard(client, cardNumber),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['card'],
+        exact: false,
+      });
+      toast('Card blocked successfully');
+    },
+    onError: (error) => toastRequestError(error),
+  });
+
+  const { mutate: doUnblock } = useMutation({
+    mutationKey: ['card', currentCard?.cardNumber],
+    mutationFn: async (cardNumber: string) => unblockCard(client, cardNumber),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['card'],
+        exact: false,
+      });
+      toast('Card blocked successfully');
+    },
+    onError: (error) => toastRequestError(error),
+  });
+
+  const { mutate: doDeactivate } = useMutation({
+    mutationKey: ['card', currentCard?.cardNumber],
+    mutationFn: async (cardNumber: string) =>
+      deactivateCard(client, cardNumber),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['card'],
+        exact: false,
+      });
+      toast('Card blocked successfully');
+    },
+    onError: (error) => toastRequestError(error),
+  });
+
   const client = useHttpClient();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ['card', page, pageSize, searchFilter],
@@ -93,11 +135,11 @@ const EmployeeManageCardsPage: React.FC = () => {
           `Performing action: ${dialogButtonText} on card: ${currentCard.cardNumber}`
         );
         if (dialogButtonText === 'Block') {
-          await blockCard(client, currentCard.cardNumber);
+          doBlock(currentCard.cardNumber);
         } else if (dialogButtonText === 'Unblock') {
-          await unblockCard(client, currentCard.cardNumber);
+          await doUnblock(currentCard.cardNumber);
         } else if (dialogButtonText === 'Deactivate') {
-          await deactivateCard(client, currentCard.cardNumber);
+          await doDeactivate(currentCard.cardNumber);
         }
       } catch (error) {
         toastRequestError(error);

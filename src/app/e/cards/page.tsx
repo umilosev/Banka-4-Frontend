@@ -20,6 +20,7 @@ import FilterBar from '@/components/filters/FilterBar';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CardResponseDto } from '@/api/response/cards';
 import { blockCard, unblockCard, deactivateCard } from '@/api/cards';
+import { toastRequestError } from '@/api/errors';
 
 interface CardFilter {
   cardNumber: string;
@@ -98,10 +99,8 @@ const EmployeeManageCardsPage: React.FC = () => {
         } else if (dialogButtonText === 'Deactivate') {
           await deactivateCard(client, currentCard.cardNumber);
         }
-        // Optionally, you can refetch the data to update the table
-        // queryClient.invalidateQueries(['card', page, pageSize, searchFilter]);
       } catch (error) {
-        console.error('Error performing action:', error);
+        toastRequestError(error);
       } finally {
         setCurrentCard(null);
         setDialogOpen(false);

@@ -26,3 +26,11 @@ export const unblockCard = async (client: Axios, cardNumber: string) =>
 
 export const deactivateCard = async (client: Axios, cardNumber: string) =>
   client.put<void>(`cards/deactivate/${cardNumber}`);
+
+export interface CardFilter {
+  cardNumber: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  cardStatus: string;
+}

@@ -22,7 +22,14 @@ import { CardResponseDto } from '@/api/response/cards';
 import { blockCard, unblockCard, deactivateCard } from '@/api/cards';
 import { toastRequestError } from '@/api/errors';
 import { toast } from 'sonner';
-import { CardFilter } from '@/api/cards';
+
+export interface CardFilter {
+  cardNumber: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  cardStatus: string;
+}
 
 const cardFilterKeyToName = (key: keyof CardFilter): string => {
   switch (key) {

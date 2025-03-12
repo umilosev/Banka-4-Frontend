@@ -19,6 +19,7 @@ export type ConfirmDialogProps = {
   description: string;
   buttonText: string;
   itemName?: string;
+  undoable?: boolean;
 };
 
 export const ConfirmDialog = ({
@@ -29,6 +30,7 @@ export const ConfirmDialog = ({
   description,
   buttonText,
   itemName,
+  undoable,
 }: ConfirmDialogProps) => {
   return (
     <AlertDialog open={open}>
@@ -36,8 +38,8 @@ export const ConfirmDialog = ({
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>
-            {description} {itemName ? `"${itemName}"` : 'this item'}? This
-            action cannot be undone.
+          {description} {itemName ? `"${itemName}"` : 'this item'}?
+          {undoable && ' This action cannot be undone.'}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

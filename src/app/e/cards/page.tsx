@@ -45,7 +45,7 @@ const EmployeeManageCardsPage: React.FC = () => {
     page: 0,
   });
 
-  const [searchFilter, setSearchFilter] = useState<CardFilter>({
+  const [cardFilter, setCardFilter] = useState<CardFilter>({
     cardNumber: '',
     firstName: '',
     lastName: '',
@@ -130,9 +130,9 @@ const EmployeeManageCardsPage: React.FC = () => {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['card', page, pageSize, searchFilter],
+    queryKey: ['card', page, pageSize, cardFilter],
     queryFn: async () => {
-      const response = await searchCards(client, searchFilter, pageSize, page);
+      const response = await searchCards(client, cardFilter, pageSize, page);
       return response.data;
     },
   });
@@ -189,9 +189,9 @@ const EmployeeManageCardsPage: React.FC = () => {
               filterKeyToName={cardFilterKeyToName}
               onSearch={(filter) => {
                 setPage(0);
-                setSearchFilter(filter);
+                setCardFilter(filter);
               }}
-              filter={searchFilter}
+              filter={cardFilter}
             />
           </CardHeader>
           <CardContent className="rounded-lg overflow-hidden">

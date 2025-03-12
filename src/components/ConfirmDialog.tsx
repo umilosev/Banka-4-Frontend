@@ -38,8 +38,8 @@ export const ConfirmDialog = ({
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>
-          {description} {itemName ? `"${itemName}"` : 'this item'}?
-          {undoable && ' This action cannot be undone.'}
+            {description} {itemName ? `"${itemName}"` : 'this item'}?
+            {undoable && ' This action cannot be undone.'}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

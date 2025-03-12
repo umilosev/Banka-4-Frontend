@@ -65,6 +65,7 @@ const EmployeeManageCardsPage: React.FC = () => {
   const [dialogDescription, setDialogDescription] = useState('');
   const [dialogButtonText, setDialogButtonText] = useState('');
   const [currentCard, setCurrentCard] = useState<CardResponseDto | null>(null);
+  const [undoable, setUndoable] = useState(false);
 
   const { mutate: doBlock } = useMutation({
     mutationKey: ['card', currentCard?.cardNumber],
@@ -91,6 +92,32 @@ const EmployeeManageCardsPage: React.FC = () => {
     },
     onError: (error) => toastRequestError(error),
   });
+
+  const handleBlockUnblock = (card: CardResponseDto) => {
+    setCurrentCard(card);
+    setUndoable(false);
+    setDialogTitle(
+      card.cardStatus === 'Blocked'
+        ? 'Confirm Unblocking the Card'
+        : 'Confirm Blocking the Card'
+    );
+    setDialogDescription(
+      card.cardStatus === 'Blocked'
+        ? 'Are you sure you want to unblock the card'
+        : 'Are you sure you want to block the card'
+    );
+    setDialogButtonText(card.cardStatus === 'Blocked' ? 'Unblock' : 'Block');
+    setDialogOpen(true);
+  };
+
+  const handleDeactivate = (card: CardResponseDto) => {
+    setUndoable(true);
+    setCurrentCard(card);
+    setDialogTitle('Confirm Deactivating the Card');
+    setDialogDescription('Are you sure you want to deactivate the card');
+    setDialogButtonText('Deactivate');
+    setDialogOpen(true);
+  };
 
   const { mutate: doDeactivate } = useMutation({
     mutationKey: ['card', currentCard?.cardNumber],
@@ -137,9 +164,9 @@ const EmployeeManageCardsPage: React.FC = () => {
         if (dialogButtonText === 'Block') {
           doBlock(currentCard.cardNumber);
         } else if (dialogButtonText === 'Unblock') {
-          await doUnblock(currentCard.cardNumber);
+          doUnblock(currentCard.cardNumber);
         } else if (dialogButtonText === 'Deactivate') {
-          await doDeactivate(currentCard.cardNumber);
+          doDeactivate(currentCard.cardNumber);
         }
       } catch (error) {
         toastRequestError(error);
@@ -177,11 +204,8 @@ const EmployeeManageCardsPage: React.FC = () => {
           <CardContent className="rounded-lg overflow-hidden">
             <DataTable
               columns={cardsColumns({
-                setCurrentCard,
-                setDialogTitle,
-                setDialogDescription,
-                setDialogButtonText,
-                setDialogOpen,
+                handleBlockUnblock,
+                handleDeactivate,
               })}
               data={data?.content ?? []}
               isLoading={isLoading}
@@ -203,6 +227,7 @@ const EmployeeManageCardsPage: React.FC = () => {
         description={dialogDescription}
         buttonText={dialogButtonText}
         itemName={currentCard?.cardNumber}
+        undoable={undoable}
       />
     </GuardBlock>
   );

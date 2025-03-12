@@ -3,19 +3,13 @@ import { CardResponseDto } from '@/api/response/cards';
 import { Button } from '@/components/ui/button';
 
 interface CardsColumnsProps {
-  setCurrentCard: (card: CardResponseDto) => void;
-  setDialogTitle: (title: string) => void;
-  setDialogDescription: (description: string) => void;
-  setDialogButtonText: (text: string) => void;
-  setDialogOpen: (open: boolean) => void;
+  handleBlockUnblock: (card: CardResponseDto) => void;
+  handleDeactivate: (card: CardResponseDto) => void;
 }
 
 export const cardsColumns = ({
-  setCurrentCard,
-  setDialogTitle,
-  setDialogDescription,
-  setDialogButtonText,
-  setDialogOpen,
+  handleBlockUnblock,
+  handleDeactivate,
 }: CardsColumnsProps): ColumnDef<CardResponseDto>[] => [
   {
     accessorKey: 'cardNumber',
@@ -48,43 +42,17 @@ export const cardsColumns = ({
     cell: ({ row }) => {
       const card = row.original;
 
-      const handleBlockUnblock = () => {
-        setCurrentCard(card);
-        setDialogTitle(
-          card.cardStatus === 'Blocked'
-            ? 'Confirm Unblocking the Card'
-            : 'Confirm Blocking the Card'
-        );
-        setDialogDescription(
-          card.cardStatus === 'Blocked'
-            ? 'Are you sure you want to unblock the card'
-            : 'Are you sure you want to block the card'
-        );
-        setDialogButtonText(
-          card.cardStatus === 'Blocked' ? 'Unblock' : 'Block'
-        );
-        setDialogOpen(true);
-      };
-
-      const handleDeactivate = () => {
-        setCurrentCard(card);
-        setDialogTitle('Confirm Deactivating the Card');
-        setDialogDescription('Are you sure you want to deactivate the card');
-        setDialogButtonText('Deactivate');
-        setDialogOpen(true);
-      };
-
       return (
         <div className="flex space-x-2">
           <Button
             variant={card.cardStatus === 'Blocked' ? 'default' : 'destructive'}
-            onClick={handleBlockUnblock}
+            onClick={() => handleBlockUnblock(card)}
           >
             {card.cardStatus === 'Blocked' ? 'Unblock' : 'Block'}
           </Button>
           <Button
             variant="destructive"
-            onClick={handleDeactivate}
+            onClick={() => handleDeactivate(card)}
             disabled={card.cardStatus === 'Deactivated'}
           >
             Deactivate

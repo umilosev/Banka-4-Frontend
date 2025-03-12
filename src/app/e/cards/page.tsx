@@ -12,39 +12,22 @@ import { useBreadcrumb } from '@/context/BreadcrumbContext';
 import GuardBlock from '@/components/GuardBlock';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { searchCards } from '@/api/cards';
+import {
+  searchCards,
+  blockCard,
+  unblockCard,
+  deactivateCard,
+  CardFilter,
+} from '@/api/cards';
 import { DataTable } from '@/components/dataTable/DataTable';
 import { cardsColumns } from '@/ui/dataTables/cards/cardsColumns';
 import useTablePageParams from '@/hooks/useTablePageParams';
-import FilterBar from '@/components/filters/FilterBar';
+import { FilterBar, FilterDefinition } from '@/components/filters/FilterBar';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { CardResponseDto } from '@/api/response/cards';
-import { blockCard, unblockCard, deactivateCard } from '@/api/cards';
+import {} from '@/api/cards';
 import { toastRequestError } from '@/api/errors';
 import { toast } from 'sonner';
-
-export interface CardFilter {
-  cardNumber: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  cardStatus: string;
-}
-
-const cardFilterKeyToName = (key: keyof CardFilter): string => {
-  switch (key) {
-    case 'cardNumber':
-      return 'Card Number';
-    case 'firstName':
-      return 'First Name';
-    case 'lastName':
-      return 'Last Name';
-    case 'email':
-      return 'Email';
-    case 'cardStatus':
-      return 'Card Status';
-  }
-};
 
 const EmployeeManageCardsPage: React.FC = () => {
   const { page, pageSize, setPage, setPageSize } = useTablePageParams('cards', {
@@ -59,6 +42,28 @@ const EmployeeManageCardsPage: React.FC = () => {
     email: '',
     cardStatus: '',
   });
+  const cardFilterColumns: Record<keyof CardFilter, FilterDefinition> = {
+    cardNumber: {
+      filterType: 'string',
+      placeholder: 'Enter card number',
+    },
+    firstName: {
+      filterType: 'string',
+      placeholder: 'Enter first name',
+    },
+    lastName: {
+      filterType: 'string',
+      placeholder: 'Enter last name',
+    },
+    email: {
+      filterType: 'string',
+      placeholder: 'Enter email',
+    },
+    cardStatus: {
+      filterType: 'string',
+      placeholder: 'Enter card status',
+    },
+  };
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
@@ -192,13 +197,13 @@ const EmployeeManageCardsPage: React.FC = () => {
               This table provides a clear and organized overview of all cards in
               the bank and key details about them.
             </CardDescription>
-            <FilterBar<CardFilter>
-              filterKeyToName={cardFilterKeyToName}
-              onSearch={(filter) => {
+            <FilterBar<CardFilter, typeof cardFilterColumns>
+              onSubmit={(filter) => {
                 setPage(0);
                 setCardFilter(filter);
               }}
               filter={cardFilter}
+              columns={cardFilterColumns}
             />
           </CardHeader>
           <CardContent className="rounded-lg overflow-hidden">

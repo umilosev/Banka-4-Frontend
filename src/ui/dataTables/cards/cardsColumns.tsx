@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { CardResponseDto } from '@/api/response/cards';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface CardsColumnsProps {
   handleBlockUnblock: (card: CardResponseDto) => void;
@@ -44,19 +45,24 @@ export const cardsColumns = ({
 
       return (
         <div className="flex space-x-2">
-          <Button
-            variant={card.cardStatus === 'Blocked' ? 'default' : 'destructive'}
-            onClick={() => handleBlockUnblock(card)}
-          >
-            {card.cardStatus === 'Blocked' ? 'Unblock' : 'Block'}
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => handleDeactivate(card)}
-            disabled={card.cardStatus === 'Deactivated'}
-          >
-            Deactivate
-          </Button>
+          {card.cardStatus === 'DEACTIVATED' ? (
+            <Badge>DEACTIVATED</Badge>
+          ) : (
+            <>
+              <Button
+                variant="secondary"
+                onClick={() => handleBlockUnblock(card)}
+              >
+                {card.cardStatus === 'BLOCKED' ? 'Unblock' : 'Block'}
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleDeactivate(card)}
+              >
+                Deactivate
+              </Button>
+            </>
+          )}
         </div>
       );
     },

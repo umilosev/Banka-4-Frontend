@@ -28,6 +28,8 @@ import { toastRequestError } from '@/api/errors';
 import { toast } from 'sonner';
 import { ALL_CARD_STATUSES } from '@/types/card';
 
+type CardAction = 'BLOCK' | 'UNBLOCK' | 'DEACTIVATE';
+
 const EmployeeManageCardsPage: React.FC = () => {
   const { page, pageSize, setPage, setPageSize } = useTablePageParams('cards', {
     pageSize: 8,
@@ -68,16 +70,14 @@ const EmployeeManageCardsPage: React.FC = () => {
   };
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState('');
-  const [dialogDescription, setDialogDescription] = useState('');
-  const [dialogButtonText, setDialogButtonText] = useState('');
   const [currentCard, setCurrentCard] = useState<CardResponseDto | null>(null);
-  const [undoable, setUndoable] = useState(false);
+  const [currentAction, setCurrentAction] = useState<CardAction>();
 
   const { mutate: doBlock } = useMutation({
     mutationKey: ['card', currentCard?.cardNumber],
     mutationFn: async (cardNumber: string) => blockCard(client, cardNumber),
     onSuccess: () => {
+      resetState();
       queryClient.invalidateQueries({
         queryKey: ['card'],
         exact: false,
@@ -91,6 +91,22 @@ const EmployeeManageCardsPage: React.FC = () => {
     mutationKey: ['card', currentCard?.cardNumber],
     mutationFn: async (cardNumber: string) => unblockCard(client, cardNumber),
     onSuccess: () => {
+      resetState();
+      queryClient.invalidateQueries({
+        queryKey: ['card'],
+        exact: false,
+      });
+      toast('Card blocked successfully');
+    },
+    onError: (error) => toastRequestError(error),
+  });
+
+  const { mutate: doDeactivate } = useMutation({
+    mutationKey: ['card', currentCard?.cardNumber],
+    mutationFn: async (cardNumber: string) =>
+      deactivateCard(client, cardNumber),
+    onSuccess: () => {
+      resetState();
       queryClient.invalidateQueries({
         queryKey: ['card'],
         exact: false,
@@ -102,43 +118,21 @@ const EmployeeManageCardsPage: React.FC = () => {
 
   const handleBlockUnblock = (card: CardResponseDto) => {
     setCurrentCard(card);
-    setUndoable(false);
-    setDialogTitle(
-      card.cardStatus === 'BLOCKED'
-        ? 'Confirm Unblocking the Card'
-        : 'Confirm Blocking the Card'
-    );
-    setDialogDescription(
-      card.cardStatus === 'BLOCKED'
-        ? 'Are you sure you want to unblock the card'
-        : 'Are you sure you want to block the card'
-    );
-    setDialogButtonText(card.cardStatus === 'BLOCKED' ? 'Unblock' : 'Block');
+    if (card.cardStatus === 'ACTIVATED') {
+      setCurrentAction('BLOCK');
+    } else if (card.cardStatus === 'DEACTIVATED') {
+      setCurrentAction('UNBLOCK');
+    } else {
+      throw Error('invalid state');
+    }
     setDialogOpen(true);
   };
 
   const handleDeactivate = (card: CardResponseDto) => {
-    setUndoable(true);
     setCurrentCard(card);
-    setDialogTitle('Confirm Deactivating the Card');
-    setDialogDescription('Are you sure you want to deactivate the card');
-    setDialogButtonText('Deactivate');
+    setCurrentAction('DEACTIVATE');
     setDialogOpen(true);
   };
-
-  const { mutate: doDeactivate } = useMutation({
-    mutationKey: ['card', currentCard?.cardNumber],
-    mutationFn: async (cardNumber: string) =>
-      deactivateCard(client, cardNumber),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['card'],
-        exact: false,
-      });
-      toast('Card blocked successfully');
-    },
-    onError: (error) => toastRequestError(error),
-  });
 
   const client = useHttpClient();
   const queryClient = useQueryClient();
@@ -158,34 +152,30 @@ const EmployeeManageCardsPage: React.FC = () => {
       items: [
         { title: 'Home', url: '/e' },
         { title: 'Cards', url: '/e/cards' },
+        { title: 'Overview' },
       ],
     });
   }, [dispatch]);
 
   const handleConfirm = async () => {
-    if (currentCard) {
-      try {
-        console.log(
-          `Performing action: ${dialogButtonText} on card: ${currentCard.cardNumber}`
-        );
-        if (dialogButtonText === 'Block') {
-          doBlock(currentCard.cardNumber);
-        } else if (dialogButtonText === 'Unblock') {
+    if (currentCard && currentAction) {
+      switch (currentAction) {
+        case 'UNBLOCK':
           doUnblock(currentCard.cardNumber);
-        } else if (dialogButtonText === 'Deactivate') {
+          return;
+        case 'BLOCK':
+          doBlock(currentCard.cardNumber);
+          return;
+        case 'DEACTIVATE':
           doDeactivate(currentCard.cardNumber);
-        }
-      } catch (error) {
-        toastRequestError(error);
-      } finally {
-        setCurrentCard(null);
-        setDialogOpen(false);
+          return;
       }
     }
   };
 
-  const handleCancel = () => {
+  const resetState = () => {
     setCurrentCard(null);
+    setCurrentAction(undefined);
     setDialogOpen(false);
   };
 
@@ -226,18 +216,39 @@ const EmployeeManageCardsPage: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-      <ConfirmDialog
-        open={dialogOpen}
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-        title={dialogTitle}
-        description={dialogDescription}
-        buttonText={dialogButtonText}
-        itemName={currentCard?.cardNumber}
-        undoable={undoable}
-      />
+      {currentAction && currentCard && dialogOpen && (
+        <ConfirmDialog
+          open={dialogOpen}
+          onConfirm={handleConfirm}
+          onCancel={resetState}
+          title={resolveDialogTitle(currentAction)}
+          description={resolveDialogDescription(currentAction)}
+        />
+      )}
     </GuardBlock>
   );
 };
+
+function resolveDialogTitle(cardAction: CardAction) {
+  switch (cardAction) {
+    case 'BLOCK':
+      return 'Block Card';
+    case 'UNBLOCK':
+      return 'Unblock Card';
+    case 'DEACTIVATE':
+      return 'Deactivate Card';
+  }
+}
+
+function resolveDialogDescription(cardAction: CardAction) {
+  switch (cardAction) {
+    case 'BLOCK':
+      return 'Are you sure you want to block this card?';
+    case 'UNBLOCK':
+      return 'Are you sure you want to unblock this card?';
+    case 'DEACTIVATE':
+      return 'Are you sure you want to deactivate this card? This action cannot be undone.';
+  }
+}
 
 export default EmployeeManageCardsPage;

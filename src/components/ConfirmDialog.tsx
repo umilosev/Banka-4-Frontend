@@ -17,9 +17,7 @@ export type ConfirmDialogProps = {
   onCancel?: () => MaybePromise<unknown>;
   title: string;
   description: string;
-  buttonText: string;
-  itemName?: string;
-  undoable?: boolean;
+  buttonText?: string;
 };
 
 export const ConfirmDialog = ({
@@ -28,19 +26,14 @@ export const ConfirmDialog = ({
   onCancel,
   title,
   description,
-  buttonText,
-  itemName,
-  undoable,
+  buttonText = 'Confirm',
 }: ConfirmDialogProps) => {
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {description} {itemName ? `"${itemName}"` : 'this item'}?
-            {undoable && ' This action cannot be undone.'}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel asChild>

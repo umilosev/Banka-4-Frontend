@@ -104,7 +104,7 @@ export default function NewPaymentPage() {
             <NewTransactionForm
               onSubmitAction={handleCreatePayment}
               accounts={accounts ?? []}
-              recipients={recipients || []}
+              recipients={recipients ?? []}
               isPending={isPending || isLoadingAccounts || isLoadingRecipients}
             />
             <Dialog2FA

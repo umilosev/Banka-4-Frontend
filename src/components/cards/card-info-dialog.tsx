@@ -24,12 +24,12 @@ export const CardInfoDialog = ({
     <Dialog open={open}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className={'text-2xl'}>Account Details</DialogTitle>
+          <DialogTitle className={'text-2xl'}>Card Details</DialogTitle>
         </DialogHeader>
         <CardInfoForm {...item} />
         <DialogClose asChild>
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            Close
           </Button>
         </DialogClose>
       </DialogContent>

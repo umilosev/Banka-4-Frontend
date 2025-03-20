@@ -219,7 +219,7 @@ export function CardsTableCard(props: CardsTableCardProps) {
       {selectedCard && (
         <CardInfoDialog
           open={isInfoDialogOpen}
-          onClose={() => setIsInfoDialogOpen(false)}
+          onOpenChange={setIsInfoDialogOpen}
           item={{
             ...selectedCard,
             createdDate: selectedCard.creationDate,

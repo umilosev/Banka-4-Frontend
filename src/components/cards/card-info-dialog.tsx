@@ -11,24 +11,24 @@ import { CardInfoForm } from './card-info-form';
 
 export type CardInfoDialogProps = {
   open: boolean;
-  onClose: () => void;
+  onOpenChange: (val: boolean) => void;
   item: CardInfo;
 };
 
 export const CardInfoDialog = ({
   open,
-  onClose,
+  onOpenChange,
   item,
 }: CardInfoDialogProps) => {
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className={'text-2xl'}>Card Details</DialogTitle>
         </DialogHeader>
         <CardInfoForm {...item} />
         <DialogClose asChild>
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button type="button" variant="secondary" onClick= {() => onOpenChange(false)}>
             Close
           </Button>
         </DialogClose>

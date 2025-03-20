@@ -28,11 +28,7 @@ export const CardInfoDialog = ({
         </DialogHeader>
         <CardInfoForm {...item} />
         <DialogClose asChild>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button type="button" variant="secondary">
             Close
           </Button>
         </DialogClose>

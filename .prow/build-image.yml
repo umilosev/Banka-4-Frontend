@@ -42,6 +42,15 @@ postsubmits:
                          harbor.k8s.elab.rs/banka-4/frontend:latest; do
                 docker push "${tag}"
               done
+
+              # Do deployment
+              helm upgrade \
+                   --atomic \
+                   --timeout=1h \
+                   --namespace=banka-4 \
+                   --set imageTag="${version}" \
+                   banka-4-frontend \
+                   oci://harbor.k8s.elab.rs/banka-4/helm/frontend
           securityContext:
             privileged: true
           imagePullPolicy: Always
